@@ -7,12 +7,11 @@ module.exports.handleMessage = async (req, res) => {
   const from = req.body.From;
   const button = req.body.ButtonReply?.id;
   const list = req.body.ListReply?.id;
-  const text = req.body.Body?.trim();
 
   if (!sessions[from]) {
     sessions[from] = { step: 'MENU' };
     await sendInteractive(from, menus.mainMenu());
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
 
   const s = sessions[from];
@@ -26,7 +25,7 @@ module.exports.handleMessage = async (req, res) => {
       await sendText(from, 'Alguien se comunicará contigo');
       delete sessions[from];
     }
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
 
   // PRODUCTOS
@@ -36,8 +35,9 @@ module.exports.handleMessage = async (req, res) => {
     const opts = products[list].options
       .map((o, i) => `${i + 1}. ${o}`)
       .join('\n');
+
     await sendText(from, `Seleccionaste ${products[list].name}\n\n${opts}`);
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
 
   // FINAL (prueba)
@@ -47,8 +47,8 @@ module.exports.handleMessage = async (req, res) => {
       'Pronto una persona se comunicará contigo para confirmar tu pedido y darte más detalles, gracias.'
     );
     delete sessions[from];
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
 
-  res.sendStatus(200);
+  res.status(200).end();
 };
