@@ -9,6 +9,7 @@ module.exports.sendInteractive = async (to, interactive) => {
   await client.messages.create({
     from: process.env.WHATSAPP_FROM,
     to,
+    body: interactive.body?.text || 'Selecciona una opción',
     interactive
   });
 };
