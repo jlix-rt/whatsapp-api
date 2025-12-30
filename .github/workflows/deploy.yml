@@ -45,11 +45,15 @@ jobs:
             sudo mkdir -p /var/www/apps/whatsapp-api
             sudo rm -rf /var/www/apps/whatsapp-api/*
             sudo cp -R dist/* /var/www/apps/whatsapp-api/
+            sudo cp package.json /var/www/apps/whatsapp-api/
+            sudo cp package-lock.json /var/www/apps/whatsapp-api/
             sudo cp ecosystem.config.js /var/www/apps/whatsapp-api/
+            sudo rm -rf node_modules
             sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /var/www/apps/whatsapp-api
 
             echo "🚀 Reiniciando backend"
             cd /var/www/apps/whatsapp-api
+            npm install
             pm2 restart whatsapp-api || pm2 start ecosystem.config.js
             pm2 save
 
