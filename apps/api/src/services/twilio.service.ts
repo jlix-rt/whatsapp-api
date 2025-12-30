@@ -95,7 +95,7 @@ export const sendInteractive = async (
 
   // Obtener cliente de Twilio para el tenant
   const client = getTwilioClient(tenant);
-
+  console.log('client', client);
   // En desarrollo: solo loguear, NO enviar a Twilio
   if (!client) {
     console.log('[MOCK SEND]', bodyText);
