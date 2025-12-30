@@ -1,11 +1,18 @@
 module.exports = {
-  apps: [{
-    name: "whatsapp-api",
-    script: "apps/api/dist/index.js",
-    cwd: ".",
-    env: {
-      NODE_ENV: "production"
+  apps: [
+    {
+      name: "whatsapp-crunchypaws",
+      script: "dist/index.js",
+      env: {
+        NODE_ENV: "production"
+      }
+    },
+    {
+      name: "whatsapp-dkape",
+      script: "dist/index.js",
+      env: {
+        NODE_ENV: "sandbox"
+      }
     }
-  }]
-};
-
+  ]
+}
