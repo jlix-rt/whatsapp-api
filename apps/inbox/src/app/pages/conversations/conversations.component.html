@@ -1,0 +1,26 @@
+<div class="conversations-container">
+  <h2>Conversaciones</h2>
+  <div *ngIf="loading" class="loading">Cargando...</div>
+  <div *ngIf="!loading && conversations.length === 0" class="empty">
+    No hay conversaciones
+  </div>
+  <div class="conversations-list">
+    <a
+      *ngFor="let conv of conversations"
+      [routerLink]="['/chat', conv.id]"
+      class="conversation-item"
+    >
+      <div class="conversation-header">
+        <span class="phone">{{ conv.phone_number }}</span>
+        <span class="date">{{ formatDate(conv.updated_at) }}</span>
+      </div>
+      <div class="conversation-preview">
+        {{ conv.last_message || 'Sin mensajes' }}
+      </div>
+      <div class="conversation-meta">
+        {{ conv.message_count || 0 }} mensajes
+      </div>
+    </a>
+  </div>
+</div>
+

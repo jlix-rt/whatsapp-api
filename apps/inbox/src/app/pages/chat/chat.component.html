@@ -1,0 +1,42 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <a routerLink="/conversations" class="back-link">← Volver</a>
+    <h2>{{ conversation?.phone_number || 'Conversación #' + conversationId }}</h2>
+  </div>
+  <div class="messages-container" #messagesContainer>
+    <div *ngIf="loading" class="loading">Cargando mensajes...</div>
+    <div
+      *ngFor="let message of messages"
+      class="message"
+      [class.inbound]="message.direction === 'inbound'"
+      [class.outbound]="message.direction === 'outbound'"
+    >
+      <div class="message-content">
+        {{ message.body }}
+      </div>
+      <div class="message-time">
+        {{ formatTime(message.created_at) }}
+      </div>
+    </div>
+  </div>
+  <div class="message-input-container">
+    <form (ngSubmit)="sendMessage()" class="message-form">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        name="message"
+        placeholder="Escribe un mensaje..."
+        class="message-input"
+        [disabled]="sending"
+      />
+      <button
+        type="submit"
+        [disabled]="!newMessage.trim() || sending"
+        class="send-button"
+      >
+        Enviar
+      </button>
+    </form>
+  </div>
+</div>
+

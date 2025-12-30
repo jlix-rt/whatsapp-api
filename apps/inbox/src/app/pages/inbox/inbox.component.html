@@ -1,0 +1,108 @@
+<div class="inbox-container">
+  <!-- Selector de tienda -->
+  <div class="store-selector">
+    <label for="store-select">Tienda:</label>
+    <select id="store-select" [(ngModel)]="selectedStoreId" (change)="loadConversations()">
+      <option *ngFor="let store of stores" [value]="store.id">{{ store.name }}</option>
+    </select>
+  </div>
+
+  <div class="inbox-layout">
+    <!-- Columna izquierda: Lista de conversaciones -->
+    <div class="conversations-panel">
+      <div class="conversations-header">
+        <h2>Conversaciones</h2>
+      </div>
+      <div class="conversations-list">
+        <div *ngIf="loading" class="loading">Cargando...</div>
+        <div *ngIf="!loading && conversations.length === 0" class="empty">
+          No hay conversaciones
+        </div>
+        <div
+          *ngFor="let conv of conversations"
+          class="conversation-item"
+          [class.active]="selectedConversation?.id === conv.id"
+          (click)="selectConversation(conv)"
+        >
+          <div class="conversation-header">
+            <span class="phone-number">{{ conv.phone_number }}</span>
+            <span class="timestamp">{{ formatDate(conv.updated_at) }}</span>
+          </div>
+          <div class="conversation-preview">
+            {{ conv.last_message || 'Sin mensajes' }}
+          </div>
+          <div class="conversation-meta">
+            <span class="message-count">{{ conv.message_count || 0 }} mensajes</span>
+            <span *ngIf="isPending(conv)" class="badge-pending">⏳ Pendiente</span>
+            <span *ngIf="!isPending(conv) && conv.human_handled" class="badge-handled">✓ Atendida</span>
+            <span class="mode-badge" [class.bot]="conv.mode === 'BOT'" [class.human]="conv.mode === 'HUMAN'">
+              {{ conv.mode }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Mensajes -->
+    <div class="messages-panel">
+      <div *ngIf="!selectedConversation" class="no-selection">
+        <p>Selecciona una conversación para ver los mensajes</p>
+      </div>
+
+      <div *ngIf="selectedConversation" class="messages-container">
+        <!-- Header de la conversación -->
+        <div class="messages-header">
+          <div class="conversation-info">
+            <h3>{{ selectedConversation.phone_number }}</h3>
+            <span class="conversation-status">
+              <span class="mode-badge" [class.bot]="selectedConversation.mode === 'BOT'" [class.human]="selectedConversation.mode === 'HUMAN'">
+                {{ selectedConversation.mode }}
+              </span>
+              <span *ngIf="isPending(selectedConversation)" class="badge-pending">⏳ Pendiente</span>
+              <span *ngIf="!isPending(selectedConversation) && selectedConversation.human_handled" class="badge-handled">✓ Atendida</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Lista de mensajes -->
+        <div class="messages-list" #messagesList>
+          <div
+            *ngFor="let message of messages"
+            class="message"
+            [class.inbound]="message.direction === 'inbound'"
+            [class.outbound]="message.direction === 'outbound'"
+          >
+            <div class="message-content">
+              {{ message.body }}
+            </div>
+            <div class="message-time">
+              {{ formatTime(message.created_at) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Input para enviar mensaje -->
+        <div class="message-input-container">
+          <form (ngSubmit)="sendMessage()" class="message-form">
+            <input
+              type="text"
+              [(ngModel)]="newMessage"
+              name="message"
+              placeholder="Escribe un mensaje..."
+              class="message-input"
+              [disabled]="sending"
+            />
+            <button
+              type="submit"
+              [disabled]="!newMessage.trim() || sending"
+              class="send-button"
+            >
+              {{ sending ? 'Enviando...' : 'Enviar' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

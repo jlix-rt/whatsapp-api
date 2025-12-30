@@ -1,0 +1,41 @@
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+header {
+  background-color: #25D366;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  
+  router-outlet {
+    display: block;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  ::ng-deep router-outlet + * {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+}
+

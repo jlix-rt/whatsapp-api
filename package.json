@@ -1,18 +1,15 @@
 {
-  "name": "whatsapp-api",
+  "name": "whatsapp-platform",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "Monorepo para WhatsApp Platform",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "twilio": "^5.11.1"
+    "install:api": "cd apps/api && npm install",
+    "install:inbox": "cd apps/inbox && npm install",
+    "install": "cd apps/inbox && npm install && cd ../api && npm install",
+    "build:api": "cd apps/api && npm run build",
+    "build:inbox": "cd apps/inbox && npm run build",
+    "start:api": "cd apps/api && npm start",
+    "start:inbox": "cd apps/inbox && npm start"
   }
 }
