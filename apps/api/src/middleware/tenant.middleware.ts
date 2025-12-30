@@ -58,7 +58,6 @@ export const tenantMiddleware = async (
     // PASO 2: Normalizar el host string
     // ========================================================================
     const hostString = Array.isArray(host) ? host[0] : host;
-    console.log('🔍 [TENANT DEBUG] Host string normalizado:', hostString);
 
     // ========================================================================
     // PASO 3: Extraer el tenant_id del subdominio
@@ -82,8 +81,6 @@ export const tenantMiddleware = async (
       return;
     }
 
-    console.log('✅ [TENANT DEBUG] Tenant ID extraído:', tenantId);
-
     // ========================================================================
     // PASO 4: Validar que el tenant existe en la base de datos
     // ========================================================================
@@ -106,7 +103,6 @@ export const tenantMiddleware = async (
     // ========================================================================
     req.tenant = store;
     
-    console.log(`✅ [TENANT SUCCESS] Tenant identificado: ${tenantId} (ID: ${store.id}, Name: ${store.name})`);
 
     next();
   } catch (error: any) {
@@ -148,12 +144,6 @@ function extractTenantIdFromHost(host: string): string | null {
   // Dividir por puntos
   const parts = hostWithoutPort.split('.');
   
-  console.log('🔍 [EXTRACT] Host desglosado:', {
-    original: host,
-    withoutPort: hostWithoutPort,
-    parts,
-    partsCount: parts.length
-  });
 
   // Validaciones básicas
   if (parts.length < 2) {
