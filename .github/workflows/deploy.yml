@@ -18,22 +18,6 @@ jobs:
         with:
           node-version: 20
 
-      # 🔧 Instalar todo (incluye dev para build)
-      - name: Install dependencies
-        run: npm install
-
-      # 🔧 Build backend
-      - name: Build API
-        run: |
-          cd apps/api
-          npm run build
-
-      # 🎨 Build inbox
-      - name: Build Inbox
-        run: |
-          cd apps/inbox
-          npm run build
-
       # 🚀 Deploy a VPS
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -41,23 +25,33 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          request_pty: true   # 👈 ESTO ES LA CLAVE
+          request_pty: true
+          timeout: 30s
+          command_timeout: 10m
           script: |
             set -e
+
             echo "📂 Entrando al repo"
             cd ${{ secrets.VPS_PATH }}
 
+            echo "🔄 Pull cambios"
             git pull origin main
 
-            echo "🔧 Backend (solo prod deps)"
+            echo "🔧 Backend (prod deps)"
             cd apps/api
             npm install --omit=dev
             pm2 restart whatsapp-api || pm2 start ecosystem.config.js
             pm2 save
 
-            echo "🎨 Publicando Inbox"
+            echo "🎨 Build Inbox"
+            cd ../inbox
+            npm install
+            npm run build
+
+            echo "📦 Publicando Inbox"
             sudo mkdir -p /var/www/html/inbox
             sudo rm -rf /var/www/html/inbox/*
-            sudo cp -R dist/inbox/* /var/www/html/inbox
+            sudo cp -R dist/* /var/www/html/inbox
             sudo chown -R www-data:www-data /var/www/html/inbox
+
             echo "✅ Despliegue completado"
