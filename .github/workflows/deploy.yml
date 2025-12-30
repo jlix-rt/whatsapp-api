@@ -22,8 +22,12 @@ jobs:
           script: |
             set -e
 
+            APP_DIR=/var/www/whatsapp-platform
+
             echo "📂 Entrando al repo"
-            cd ${{ secrets.VPS_PATH }}
+            cd $APP_DIR
+
+            git config --global --add safe.directory $APP_DIR
 
             echo "🔄 Actualizando código"
             git pull origin main
@@ -34,7 +38,7 @@ jobs:
             pm2 restart whatsapp-api || pm2 start ecosystem.config.js
             pm2 save
 
-            echo "🎨 Build Inbox (Angular, no interactivo)"
+            echo "🎨 Build Inbox"
             cd ../inbox
             export NG_CLI_ANALYTICS=false
             npm install
