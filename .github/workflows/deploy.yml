@@ -32,14 +32,25 @@ jobs:
             echo "🔄 Actualizando código"
             git pull origin main
 
-            echo "🔧 Backend (prod deps)"
+            echo "🔧 Backend (prod deps y build)"
             cd apps/api
             npm install --omit=dev
+            npm run build
+            
+            echo "📦 Copiando compilado del backend"
+            sudo mkdir -p /var/www/apps/whatsapp-api
+            sudo rm -rf /var/www/apps/whatsapp-api/*
+            sudo cp -R dist/* /var/www/apps/whatsapp-api/
+            sudo cp ecosystem.config.js /var/www/apps/whatsapp-api/
+            sudo chown -R www-data:www-data /var/www/apps/whatsapp-api
+            
+            echo "🚀 Reiniciando aplicación"
+            cd /var/www/apps/whatsapp-api
             pm2 restart whatsapp-api || pm2 start ecosystem.config.js
             pm2 save
 
             echo "🎨 Build Inbox"
-            cd ../inbox
+            cd ${{ secrets.VPS_PATH }}/apps/inbox
             export NG_CLI_ANALYTICS=false
             npm install
             npm run build
