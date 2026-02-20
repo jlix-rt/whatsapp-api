@@ -11,13 +11,18 @@ export interface PushSubscriptionData {
   };
 }
 
+// Interfaz extendida para ServiceWorkerRegistration con pushManager
+interface ServiceWorkerRegistrationWithPush extends ServiceWorkerRegistration {
+  pushManager: PushManager;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PushNotificationService {
   // Usar URL relativa si está vacía, o la URL configurada
   private apiUrl = environment.apiUrl || (environment.production ? '' : 'http://localhost:3333');
-  private swRegistration: ServiceWorkerRegistration | null = null;
+  private swRegistration: ServiceWorkerRegistrationWithPush | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +43,7 @@ export class PushNotificationService {
       // Registrar el service worker
       console.log('📝 Registrando Service Worker...');
       const registration = await navigator.serviceWorker.register('/sw.js');
-      this.swRegistration = registration;
+      this.swRegistration = registration as ServiceWorkerRegistrationWithPush;
       
       console.log('✅ Service Worker registrado:', registration.scope);
       
@@ -49,7 +54,7 @@ export class PushNotificationService {
       if (currentPermission === 'granted') {
         // Ya tenemos permisos, verificar suscripción
         console.log('🔍 Verificando suscripción existente...');
-        const subscription = await registration.pushManager.getSubscription();
+        const subscription = await (registration as ServiceWorkerRegistrationWithPush).pushManager.getSubscription();
         if (subscription) {
           console.log('✅ Suscripción encontrada:', subscription.endpoint.substring(0, 50) + '...');
           // SIEMPRE verificar y re-enviar la suscripción al servidor
@@ -226,7 +231,7 @@ export class PushNotificationService {
       return false;
     }
 
-    const subscription = await this.swRegistration.pushManager.getSubscription();
+    const subscription = await (this.swRegistration as any).pushManager.getSubscription();
     return subscription !== null;
   }
 
@@ -262,7 +267,7 @@ export class PushNotificationService {
       return;
     }
 
-    const subscription = await this.swRegistration.pushManager.getSubscription();
+    const subscription = await (this.swRegistration as any).pushManager.getSubscription();
     if (subscription) {
       await subscription.unsubscribe();
       // Notificar al backend que se canceló la suscripción
