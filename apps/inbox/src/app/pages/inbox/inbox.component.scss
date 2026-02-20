@@ -87,7 +87,7 @@
 .file-input-label{cursor:pointer;font-size:1.5rem;padding:.5rem;display:flex;align-items:center;justify-content:center;transition:transform .2s;user-select:none}
 .file-input-label:hover{transform:scale(1.1)}
 .file-input-label:active{transform:scale(.95)}
-.message-input{flex:1;padding:.75rem;border:1px solid #e0e0e0;border-radius:8px;font-size:1rem}
+.message-input{flex:1;padding:.75rem;border:1px solid #e0e0e0;border-radius:8px;font-size:1rem;font-family:inherit;resize:none;min-height:44px;max-height:150px;overflow-y:auto;line-height:1.5}
 .message-input:focus{outline:none;border-color:#25D366}
 .send-button{padding:.75rem 1.5rem;background-color:#25D366;color:white;border:none;border-radius:8px;font-weight:500;cursor:pointer;transition:background-color .2s}
 .send-button:hover:not(:disabled){background-color:#20ba5a}

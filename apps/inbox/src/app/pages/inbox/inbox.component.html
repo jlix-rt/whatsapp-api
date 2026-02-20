@@ -198,14 +198,16 @@
               [disabled]="sending"
               style="display: none;"
             />
-            <input
-              type="text"
+            <textarea
               [(ngModel)]="newMessage"
               name="message"
               placeholder="Escribe un mensaje..."
               class="message-input"
               [disabled]="sending"
-            />
+              rows="1"
+              (keydown)="onMessageKeyDown($event)"
+              (input)="onMessageInput($event)"
+            ></textarea>
             <button
               type="submit"
               [disabled]="(!newMessage.trim() && !selectedFile) || sending"

@@ -1144,5 +1144,29 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     return message.latitude !== null && message.latitude !== undefined &&
            message.longitude !== null && message.longitude !== undefined;
   }
+
+  onMessageKeyDown(event: KeyboardEvent) {
+    // Si se presiona Enter sin Shift, enviar el mensaje
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      // Solo enviar si hay contenido o un archivo seleccionado
+      if ((this.newMessage.trim() || this.selectedFile) && !this.sending) {
+        this.sendMessage();
+      }
+    }
+    // Si se presiona Enter con Shift, permitir la nueva línea (comportamiento por defecto)
+  }
+
+  onMessageInput(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    // Ajustar altura automáticamente según el contenido
+    textarea.style.height = 'auto';
+    // Limitar altura máxima a aproximadamente 6 líneas (150px)
+    const maxHeight = 150;
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = `${newHeight}px`;
+    // Si el contenido excede la altura máxima, mostrar scroll
+    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  }
 }
 
